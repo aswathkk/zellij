@@ -1656,6 +1656,7 @@ impl Tab {
     ) -> bool {
         if self.can_increase_pane_and_surroundings_right(pane_id, reduce_by) {
             self.increase_pane_and_surroundings_right(pane_id, reduce_by);
+            self.relayout_tab(Direction::Horizontal);
             return true;
         }
         false
@@ -1667,6 +1668,7 @@ impl Tab {
     ) -> bool {
         if self.can_increase_pane_and_surroundings_left(pane_id, reduce_by) {
             self.increase_pane_and_surroundings_left(pane_id, reduce_by);
+            self.relayout_tab(Direction::Horizontal);
             return true;
         }
         false
@@ -1674,6 +1676,7 @@ impl Tab {
     fn try_increase_pane_and_surroundings_up(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_increase_pane_and_surroundings_up(pane_id, reduce_by) {
             self.increase_pane_and_surroundings_up(pane_id, reduce_by);
+            self.relayout_tab(Direction::Vertical);
             return true;
         }
         false
@@ -1685,6 +1688,7 @@ impl Tab {
     ) -> bool {
         if self.can_increase_pane_and_surroundings_down(pane_id, reduce_by) {
             self.increase_pane_and_surroundings_down(pane_id, reduce_by);
+            self.relayout_tab(Direction::Vertical);
             return true;
         }
         false
@@ -1692,6 +1696,7 @@ impl Tab {
     fn try_reduce_pane_and_surroundings_right(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_right(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_right(pane_id, reduce_by);
+            self.relayout_tab(Direction::Horizontal);
             return true;
         }
         false
@@ -1699,6 +1704,7 @@ impl Tab {
     fn try_reduce_pane_and_surroundings_left(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_left(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_left(pane_id, reduce_by);
+            self.relayout_tab(Direction::Horizontal);
             return true;
         }
         false
@@ -1706,6 +1712,7 @@ impl Tab {
     fn try_reduce_pane_and_surroundings_up(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_up(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_up(pane_id, reduce_by);
+            self.relayout_tab(Direction::Vertical);
             return true;
         }
         false
@@ -1713,6 +1720,7 @@ impl Tab {
     fn try_reduce_pane_and_surroundings_down(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_down(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_down(pane_id, reduce_by);
+            self.relayout_tab(Direction::Vertical);
             return true;
         }
         false
@@ -1823,12 +1831,16 @@ impl Tab {
     ) {
         if self.can_increase_pane_and_surroundings_right(active_pane_id, count) {
             self.increase_pane_and_surroundings_right(active_pane_id, count);
+            self.relayout_tab(Direction::Horizontal);
         } else if self.can_increase_pane_and_surroundings_down(active_pane_id, count) {
             self.increase_pane_and_surroundings_down(active_pane_id, count);
+            self.relayout_tab(Direction::Vertical);
         } else if self.can_increase_pane_and_surroundings_left(active_pane_id, count) {
             self.increase_pane_and_surroundings_left(active_pane_id, count);
+            self.relayout_tab(Direction::Horizontal);
         } else if self.can_increase_pane_and_surroundings_up(active_pane_id, count) {
             self.increase_pane_and_surroundings_up(active_pane_id, count);
+            self.relayout_tab(Direction::Vertical);
         };
     }
     fn checked_reduce_pane_and_surroundings_one_direction(
@@ -1838,12 +1850,16 @@ impl Tab {
     ) {
         if self.can_reduce_pane_and_surroundings_right(active_pane_id, count) {
             self.reduce_pane_and_surroundings_right(active_pane_id, count);
+            self.relayout_tab(Direction::Horizontal);
         } else if self.can_reduce_pane_and_surroundings_down(active_pane_id, count) {
             self.reduce_pane_and_surroundings_down(active_pane_id, count);
+            self.relayout_tab(Direction::Vertical);
         } else if self.can_reduce_pane_and_surroundings_left(active_pane_id, count) {
             self.reduce_pane_and_surroundings_left(active_pane_id, count);
+            self.relayout_tab(Direction::Horizontal);
         } else if self.can_reduce_pane_and_surroundings_up(active_pane_id, count) {
             self.reduce_pane_and_surroundings_up(active_pane_id, count);
+            self.relayout_tab(Direction::Vertical);
         };
     }
     // TODO: Find a way to reduce duplication between `resize_increase` and `resize_decrease`
@@ -1861,7 +1877,6 @@ impl Tab {
                 _ => self.nondirectional_resize_increase_helper(),
             }
         }
-        self.render();
     }
     pub fn resize_decrease(&mut self) {
         if let Some(active_pane_id) = self.get_active_pane_id() {
@@ -1876,7 +1891,6 @@ impl Tab {
                 _ => self.nondirectional_resize_reduce_helper(),
             }
         }
-        self.render();
     }
     fn nondirectional_resize_increase_helper(&mut self) {
         let active_pane_id = self.get_active_pane_id().unwrap();
@@ -2036,6 +2050,7 @@ impl Tab {
             }
             _ => {}
         }
+        self.checked_increase_pane_and_surroundings_one_direction(&active_pane_id, RESIZE_PERCENT);
         self.render();
     }
 
@@ -2191,6 +2206,7 @@ impl Tab {
             }
             _ => {}
         }
+        self.checked_reduce_pane_and_surroundings_one_direction(&active_pane_id, RESIZE_PERCENT);
         self.render();
     }
     pub fn move_focus(&mut self) {
