@@ -1671,11 +1671,7 @@ impl Tab {
         }
         return false;
     }
-    fn try_increase_pane_and_surroundings_up(
-        &mut self,
-        pane_id: &PaneId,
-        reduce_by: f64,
-    ) -> bool {
+    fn try_increase_pane_and_surroundings_up(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_increase_pane_and_surroundings_up(pane_id, reduce_by) {
             self.increase_pane_and_surroundings_up(pane_id, reduce_by);
             return true;
@@ -1693,22 +1689,14 @@ impl Tab {
         }
         return false;
     }
-    fn try_reduce_pane_and_surroundings_right(
-        &mut self,
-        pane_id: &PaneId,
-        reduce_by: f64,
-    ) -> bool {
+    fn try_reduce_pane_and_surroundings_right(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_right(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_right(pane_id, reduce_by);
             return true;
         }
         return false;
     }
-    fn try_reduce_pane_and_surroundings_left(
-        &mut self,
-        pane_id: &PaneId,
-        reduce_by: f64,
-    ) -> bool {
+    fn try_reduce_pane_and_surroundings_left(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_left(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_left(pane_id, reduce_by);
             return true;
@@ -1722,11 +1710,7 @@ impl Tab {
         }
         return false;
     }
-    fn try_reduce_pane_and_surroundings_down(
-        &mut self,
-        pane_id: &PaneId,
-        reduce_by: f64,
-    ) -> bool {
+    fn try_reduce_pane_and_surroundings_down(&mut self, pane_id: &PaneId, reduce_by: f64) -> bool {
         if self.can_reduce_pane_and_surroundings_down(pane_id, reduce_by) {
             self.reduce_pane_and_surroundings_down(pane_id, reduce_by);
             return true;
@@ -1884,7 +1868,10 @@ impl Tab {
             match self.get_nonplugin_pane_ids().len() {
                 1 => {}
                 2 => {
-                    self.checked_reduce_pane_and_surroundings_one_direction(&active_pane_id, RESIZE_PERCENT);
+                    self.checked_reduce_pane_and_surroundings_one_direction(
+                        &active_pane_id,
+                        RESIZE_PERCENT,
+                    );
                 }
                 _ => self.nondirectional_resize_reduce_helper(),
             }
